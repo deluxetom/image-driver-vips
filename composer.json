@@ -1,0 +1,26 @@
+{
+    "name": "intervention/image-driver-vips",
+    "description": "Driver to use libvips with Intervention Image",
+    "homepage": "https://image.intervention.io/",
+    "keywords": [
+        "image",
+        "vips"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Oliver Vogel",
+            "email": "oliver@intervention.io",
+            "homepage": "https://intervention.io/"
+        }
+    ],
+    "require": {
+        "intervention/image": "dev-develop",
+        "jcupitt/vips": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Intervention\\Image\\Drivers\\Vips\\": "src"
+        }
+    }
+}
