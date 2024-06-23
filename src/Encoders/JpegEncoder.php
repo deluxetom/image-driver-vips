@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Vips\Encoders;
 
-use Intervention\Image\Drivers\DriverSpecializedEncoder;
 use Intervention\Image\EncodedImage;
+use Intervention\Image\Encoders\JpegEncoder as GenericJpegEncoder;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\SpecializedInterface;
 
-/**
- * @property int $quality
- */
-class JpegEncoder extends DriverSpecializedEncoder
+class JpegEncoder extends GenericJpegEncoder implements SpecializedInterface
 {
     /**
      * {@inheritdoc}
@@ -20,11 +18,18 @@ class JpegEncoder extends DriverSpecializedEncoder
      */
     public function encode(ImageInterface $image): EncodedImage
     {
+        // $blendingColor = $this->driver()->handleInput(
+        //     $this->driver()->config()->blendingColor
+        // );
+
+        // $blendingColor = $this->driver()
+        //     ->colorProcessor($image->colorspace())
+        //     ->colorToNative($blendingColor);
+
         $result = $image->core()->native()->writeToBuffer('.jpg', [
             'Q' => $this->quality,
-            'interlace' => false,
-            'strip' => true,
-            'optimize_coding' => true,
+            'interlace' => $this->progressive,
+            // 'background' => $blendingColor->toArray(),
         ]);
 
         return new EncodedImage($result, 'image/jpeg');

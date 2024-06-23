@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Vips;
 
-use ArrayIterator;
-use Intervention\Image\Interfaces\CoreInterface;
 use Intervention\Image\Interfaces\CollectionInterface;
+use Intervention\Image\Interfaces\CoreInterface;
 use Intervention\Image\Interfaces\FrameInterface;
 use IteratorAggregate;
 use Jcupitt\Vips\Image as VipsImage;
@@ -24,16 +23,21 @@ class Core implements CoreInterface, IteratorAggregate
     {
     }
 
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator($this->toArray());
-    }
-
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::native()
+     */
     public function native(): mixed
     {
         return $this->vipsImage;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::setNative()
+     */
     public function setNative(mixed $native): CoreInterface
     {
         $this->vipsImage = $native;
@@ -41,14 +45,26 @@ class Core implements CoreInterface, IteratorAggregate
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::count()
+     */
     public function count(): int
     {
-        return 1;
+        return $this->vipsImage->getType('n-pages') === 0 ? 1 : $this->vipsImage->get('n-pages');
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::frame()
+     */
     public function frame(int $position): FrameInterface
     {
-        return $this->first();
+        // $images[] = $image->extract_area(0, $i * $pageHeight, $image->width, $pageHeight);
+        // $image->extract_area(0, $i * $pageHeight, $image->width, $pageHeight);
+
     }
 
     public function add(FrameInterface $frame): CoreInterface
@@ -57,22 +73,22 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function loops(): int
     {
-        return 0;
     }
 
     public function setLoops(int $loops): CoreInterface
     {
-        return $this;
     }
 
     public function first(): FrameInterface
     {
-        return new Frame($this->vipsImage);
+    }
+
+    public function last(): FrameInterface
+    {
     }
 
     public function has(int|string $key): bool
     {
-        return (string) $key === '0';
     }
 
     public function push($item): CollectionInterface
@@ -81,16 +97,10 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function get(int|string $key, $default = null): mixed
     {
-        return $this->has($key) ? $this->frame($key) : $default;
     }
 
     public function getAtPosition(int $key = 0, $default = null): mixed
     {
-    }
-
-    public function last(): FrameInterface
-    {
-        return $this->first();
     }
 
     public function empty(): CollectionInterface
@@ -99,16 +109,13 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function toArray(): array
     {
-        $frames = [];
-
-        foreach ($this as $frame) {
-            $frames[] = $frame;
-        }
-
-        return $frames;
     }
 
     public function slice(int $offset, ?int $length = 0): CollectionInterface
+    {
+    }
+
+    public function getIterator(): Traversable
     {
     }
 }

@@ -14,15 +14,25 @@ use Jcupitt\Vips\Image as VipsImage;
 
 class Frame implements FrameInterface
 {
-    public function __construct(protected VipsImage $vipsImage)
+    public function __construct(protected VipsImage $vipsImage, protected float $delay = 0)
     {
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::native()
+     */
     public function native(): mixed
     {
         return $this->vipsImage;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::setNative()
+     */
     public function setNative($native): FrameInterface
     {
         $this->vipsImage = $native;
@@ -30,31 +40,70 @@ class Frame implements FrameInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::toImage()
+     */
     public function toImage(DriverInterface $driver): ImageInterface
     {
         return new Image($driver, new Core($this->native()));
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::size()
+     */
     public function size(): SizeInterface
     {
-        return new Rectangle($this->vipsImage->width, $this->vipsImage->height);
+        return new Rectangle(
+            $this->vipsImage->width,
+            $this->vipsImage->height,
+        );
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::delay()
+     */
     public function delay(): float
     {
-        return 0;
+        return $this->delay;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::delay()
+     */
     public function setDelay(float $delay): FrameInterface
     {
+        $this->delay = $delay;
+
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * Currently not implemented by libvips
+     *
+     * @see FrameInterface::dispose()
+     */
     public function dispose(): int
     {
         return 0;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * Currently not implemented by libvips
+     *
+     * @see FrameInterface::dispose()
+     */
     public function setDispose(int $dispose): FrameInterface
     {
         return $this;
@@ -62,26 +111,21 @@ class Frame implements FrameInterface
 
     public function setOffset(int $left, int $top): FrameInterface
     {
-        return $this;
     }
 
     public function offsetLeft(): int
     {
-        return 0;
     }
 
     public function setOffsetLeft(int $offset): FrameInterface
     {
-        return $this;
     }
 
     public function offsetTop(): int
     {
-        return 0;
     }
 
     public function setOffsetTop(int $offset): FrameInterface
     {
-        return $this;
     }
 }

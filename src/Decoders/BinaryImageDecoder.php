@@ -6,11 +6,11 @@ namespace Intervention\Image\Drivers\Vips\Decoders;
 
 use Exception;
 use Intervention\Image\Exceptions\DecoderException;
-use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\ColorInterface;
 use Jcupitt\Vips;
 
-class FilePathImageDecoder extends NativeObjectDecoder
+class BinaryImageDecoder extends NativeObjectDecoder
 {
     /**
      * {@inheritdoc}
@@ -19,12 +19,12 @@ class FilePathImageDecoder extends NativeObjectDecoder
      */
     public function decode(mixed $input): ImageInterface|ColorInterface
     {
-        if (!$this->isFile($input)) {
+        if (!is_string($input)) {
             throw new DecoderException('Unable to decode input');
         }
 
         try {
-            $vipsImage = Vips\Image::newFromFile($input . '[' . $this->stringOptions() . ']', [
+            $vipsImage = Vips\Image::newFromBuffer($input, $this->stringOptions(), [
                 'access' => Vips\Access::SEQUENTIAL,
             ]);
         } catch (Exception) {
@@ -33,8 +33,8 @@ class FilePathImageDecoder extends NativeObjectDecoder
 
         $image = parent::decode($vipsImage);
 
-        // set file path on origin
-        $image->origin()->setFilePath($input);
+        // extract exif data
+        // $image->setExif($this->extractExifData($input));
 
         return $image;
     }

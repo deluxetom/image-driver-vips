@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Vips\Analyzers;
 
-use Intervention\Image\Drivers\DriverSpecialized;
-use Intervention\Image\Interfaces\AnalyzerInterface;
+use Intervention\Image\Analyzers\WidthAnalyzer as GenericWidthAnalyzer;
 use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Interfaces\SpecializedInterface;
 
-class HeightAnalyzer extends DriverSpecialized implements AnalyzerInterface
+class HeightAnalyzer extends GenericWidthAnalyzer implements SpecializedInterface
 {
     public function analyze(ImageInterface $image): mixed
     {
-        return $image->core()->native()->height;
+        $vipsImage = $image->core()->native();
+
+        return $vipsImage->getType('page-height') === 0 ? $vipsImage->height : $vipsImage->get('page-height');
     }
 }
