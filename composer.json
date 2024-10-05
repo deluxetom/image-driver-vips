@@ -1,6 +1,6 @@
 {
     "name": "intervention/image-driver-vips",
-    "description": "Driver to use libvips with Intervention Image",
+    "description": "libvips driver for Intervention Image",
     "homepage": "https://image.intervention.io/",
     "keywords": [
         "image",
