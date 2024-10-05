@@ -12,4 +12,9 @@ abstract class BaseTestCase extends TestCase
     {
         return sprintf('%s/resources/%s', __DIR__, $filename);
     }
+
+    public static function getTestResourceData($filename = 'test.jpg'): string
+    {
+        return file_get_contents(self::getTestResourcePath($filename));
+    }
 }
