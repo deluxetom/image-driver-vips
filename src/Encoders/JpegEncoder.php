@@ -32,6 +32,6 @@ class JpegEncoder extends GenericJpegEncoder implements SpecializedInterface
             // 'background' => $blendingColor->toArray(),
         ]);
 
-        return new EncodedImage($result, 'image/jpeg');
+        return new EncodedImage($result);
     }
 }
