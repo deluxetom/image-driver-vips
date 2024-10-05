@@ -15,7 +15,7 @@
         }
     ],
     "require": {
-        "intervention/image": "^3.7",
+        "intervention/image": "^3.8",
         "jcupitt/vips": "^2.3"
     },
     "require-dev": {
