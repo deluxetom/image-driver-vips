@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Intervention\Image\Tests\Unit\Drivers\Vips;
+namespace Intervention\Image\Drivers\Vips\Tests\Unit;
 
 use Intervention\Image\Colors\Rgb\Channels\Alpha;
 use Intervention\Image\Colors\Rgb\Channels\Blue;

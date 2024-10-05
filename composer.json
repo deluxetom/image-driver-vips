@@ -32,7 +32,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Intervention\\Image\\Tests\\Unit\\Drivers\\Vips\\": "tests"
+            "Intervention\\Image\\Drivers\\Vips\\Tests\\": "tests"
         }
     },
     "config": {
