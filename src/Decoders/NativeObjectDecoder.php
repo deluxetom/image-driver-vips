@@ -11,6 +11,8 @@ use Intervention\Image\Image;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
+use Intervention\Image\MediaType;
+use Jcupitt\Vips\Exception;
 use Jcupitt\Vips\Image as VipsImage;
 
 class NativeObjectDecoder extends SpecializableDecoder implements SpecializedInterface
@@ -36,10 +38,17 @@ class NativeObjectDecoder extends SpecializableDecoder implements SpecializedInt
         }
 
         // build image instance
-        return new Image(
+        $image = new Image(
             $this->driver(),
             new Core($input)
         );
+
+        // set media type on origin
+        if ($mediaType = $this->vipsMediaType($input)) {
+            $image->origin()->setMediaType($mediaType);
+        }
+
+        return $image;
     }
 
     /**
@@ -56,5 +65,37 @@ class NativeObjectDecoder extends SpecializableDecoder implements SpecializedInt
         }
 
         return $options;
+    }
+
+    /**
+     * Return media type of given vips image instance
+     *
+     * @param VipsImage $vips
+     * @return null|MediaType
+     */
+    protected function vipsMediaType(VipsImage $vips): ?MediaType
+    {
+        try {
+            $loader = $vips->get('vips-loader');
+        } catch (Exception) {
+            return null;
+        }
+
+        $result = preg_match("/^(?P<loader>.+)load(_.+)?$/", $loader, $matches);
+
+        if ($result !== 1) {
+            return null;
+        }
+
+        return match ($matches['loader']) {
+            'gif' => MediaType::IMAGE_GIF,
+            'heif' => MediaType::IMAGE_HEIF,
+            'jp2k' => MediaType::IMAGE_JP2,
+            'jpeg' => MediaType::IMAGE_JPEG,
+            'png' => MediaType::IMAGE_PNG,
+            'tiff' => MediaType::IMAGE_TIFF,
+            'webp' => MediaType::IMAGE_WEBP,
+            default => null
+        };
     }
 }
