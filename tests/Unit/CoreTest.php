@@ -33,9 +33,6 @@ class CoreTest extends BaseTestCase
         $animation->set("page-height", $red->height);
         $animation->set("n-pages", count($frames));
 
-        $green = $animation->extract_area(0, 10, 10, 10);
-        $green->writeToFile('green.png');
-
         $this->core = new Core($animation);
     }
 
