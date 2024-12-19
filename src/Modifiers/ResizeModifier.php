@@ -20,7 +20,7 @@ class ResizeModifier extends GenericResizeModifier implements SpecializedInterfa
         $image->core()->setNative(
             $image->core()->native()->thumbnail_image($this->width, [
                 'height' => $this->height,
-                'size'   => 'force',
+                'size' => 'force',
                 'no_rotate' => true,
             ])
         );
