@@ -15,16 +15,8 @@ class PixelColorAnalyzer extends GenericPixelColorAnalyzer implements Specialize
 {
     public function analyze(ImageInterface $image): mixed
     {
-        // $color = $this->colorAt(
-        //     $image->colorspace(),
-        //     $image->core()->frame($this->frame_key)->native()
-        // );
-
-        // $res = $image->core()->native()->getpoint($this->x, $this->y);
-
         return $this->colorAt(
             $image->colorspace(),
-            // $image->core()->frame($this->frame_key)->native()
             $image->core()->native()
         );
     }
@@ -36,11 +28,9 @@ class PixelColorAnalyzer extends GenericPixelColorAnalyzer implements Specialize
     {
         return $this->driver()
             ->colorProcessor($colorspace)
-            ->nativeToColor(
-                array_map(
-                    fn ($value) => (int) $value,
-                    $vipsImage->getpoint($this->x, $this->y)
-                )
-            );
+            ->nativeToColor(array_map(
+                fn ($value): int => (int) $value,
+                $vipsImage->getpoint($this->x, $this->y)
+            ));
     }
 }
