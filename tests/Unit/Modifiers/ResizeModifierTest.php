@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 #[CoversClass(\Intervention\Image\Drivers\Imagick\Modifiers\ResizeModifier::class)]
 final class ResizeModifierTest extends BaseTestCase
 {
-    public function testColorChange(): void
+    public function testModify(): void
     {
         $image = $this->readTestImage('blocks.png');
         $this->assertEquals(640, $image->width());
