@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Intervention\Image\Drivers\Vips\Tests\Unit\Modifiers;
 
 use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
-use Intervention\Image\Modifiers\BlurModifier;
 use Intervention\Image\Modifiers\ResizeModifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 
