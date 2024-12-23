@@ -20,6 +20,7 @@ class PngEncoder extends GenericPngEncoder implements SpecializedInterface
     {
         $result = $image->core()->native()->writeToBuffer('.png', [
             'interlace' => $this->interlaced,
+            'palette' => $this->indexed,
         ]);
 
         return new EncodedImage($result, 'image/png');
