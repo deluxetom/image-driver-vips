@@ -8,10 +8,14 @@ use Intervention\Image\Colors\Rgb\Channels\Alpha;
 use Intervention\Image\Colors\Rgb\Channels\Blue;
 use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
+use Intervention\Image\Colors\Rgb\Color as RgbColor;
+use Intervention\Image\Drivers\Vips\Core;
 use Intervention\Image\Drivers\Vips\Decoders\FilePathImageDecoder;
 use Intervention\Image\Drivers\Vips\Driver;
+use Intervention\Image\EncodedImage;
 use Intervention\Image\Image;
 use Intervention\Image\Interfaces\ColorInterface;
+use Jcupitt\Vips\Image as VipsImage;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 abstract class BaseTestCase extends MockeryTestCase
@@ -30,6 +34,14 @@ abstract class BaseTestCase extends MockeryTestCase
     {
         return (new Driver())->specialize(new FilePathImageDecoder())->decode(
             static::getTestResourcePath($filename)
+        );
+    }
+
+    public static function createTestImage(int $width, int $height): Image
+    {
+        return new Image(
+            new Driver(),
+            new Core(VipsImage::black($width, $height))
         );
     }
 
@@ -93,5 +105,27 @@ abstract class BaseTestCase extends MockeryTestCase
             $range($a, $tolerance),
             $errorMessage($r, $g, $b, $a, $color)
         );
+    }
+
+    protected function assertTransparency(ColorInterface $color): void
+    {
+        $this->assertInstanceOf(RgbColor::class, $color);
+        $channel = $color->channel(Alpha::class);
+        $this->assertEquals(0, $channel->value());
+    }
+
+    protected function assertMediaType(string|array $allowed, string|EncodedImage $input): void
+    {
+//        $finfo = new \finfo(FILEINFO_MIME_TYPE);
+//        $detected = $finfo->buffer((string) $input);
+
+        $pointer = fopen('php://temp', 'rw');
+        fputs($pointer, (string) $input);
+        rewind($pointer);
+        $detected = mime_content_type($pointer);
+        fclose($pointer);
+
+        $allowed = is_string($allowed) ? [$allowed] : $allowed;
+        $this->assertTrue(in_array($detected, $allowed));
     }
 }
