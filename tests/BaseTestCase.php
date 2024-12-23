@@ -106,6 +106,9 @@ abstract class BaseTestCase extends MockeryTestCase
         fclose($pointer);
 
         $allowed = is_string($allowed) ? [$allowed] : $allowed;
-        $this->assertTrue(in_array($detected, $allowed));
+        $this->assertTrue(
+            in_array($detected, $allowed),
+            'Desteted media type ' . $detected . ' is not in allowed types [' . implode(', ', $allowed) . ']'
+        );
     }
 }
