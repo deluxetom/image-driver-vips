@@ -10,6 +10,7 @@ use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
 use Intervention\Image\Drivers\Vips\Decoders\FilePathImageDecoder;
 use Intervention\Image\Drivers\Vips\Driver;
+use Intervention\Image\EncodedImage;
 use Intervention\Image\Image;
 use Intervention\Image\Interfaces\ColorInterface;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
@@ -92,6 +93,21 @@ abstract class BaseTestCase extends MockeryTestCase
             $color->channel(Alpha::class)->value(),
             $range($a, $tolerance),
             $errorMessage($r, $g, $b, $a, $color)
+        );
+    }
+
+    protected function assertMediaType(string|array $allowed, string|EncodedImage $input): void
+    {
+        $pointer = fopen('php://temp', 'rw');
+        fputs($pointer, (string) $input);
+        rewind($pointer);
+        $detected = mime_content_type($pointer);
+        fclose($pointer);
+
+        $allowed = is_string($allowed) ? [$allowed] : $allowed;
+        $this->assertTrue(
+            in_array($detected, $allowed),
+            'Desteted media type ' . $detected . ' is not in allowed types [' . implode(', ', $allowed) . ']'
         );
     }
 }
