@@ -4,7 +4,6 @@ Early draft of libvips driver for Intervention Image Version 3.
 
 - PHP >= 8.1
 
-<<<<<<< HEAD
 ## Installation
     
 ```bash
