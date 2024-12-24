@@ -13,7 +13,6 @@ use Intervention\Image\Interfaces\SizeInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
 use Intervention\Image\Modifiers\CropModifier as GenericCropModifier;
 use Jcupitt\Vips\BandFormat;
-use Jcupitt\Vips\BlendMode;
 use Jcupitt\Vips\Extend;
 use Jcupitt\Vips\Image as VipsImage;
 use Jcupitt\Vips\Interesting;
@@ -27,37 +26,29 @@ class CropModifier extends GenericCropModifier implements SpecializedInterface
         $crop = $this->crop($image);
         $background = $this->background($crop);
 
-        $background->writeToFile('background.png');
-
-        var_dump($crop);
-        var_dump($this->offset_x);
-        var_dump($this->offset_y);
-
-        if (is_null($this->offset_x) && is_null($this->offset_y)) {
+        if (
+            in_array($this->position, [Interesting::ATTENTION, Interesting::ENTROPY]) &&
+            (
+                $crop->width() < $originalSize->width() ||
+                $crop->height() < $originalSize->height()
+            )
+        ) {
             $image->core()->setNative(
                 $image->core()->native()->smartcrop(
                     $crop->width(),
                     $crop->height(),
-                    ['interesting' => Interesting::CENTRE]
+                    ['interesting' => $this->position]
                 )
             );
         } else {
             $offset_x = $crop->pivot()->x() + $this->offset_x;
             $offset_y = $crop->pivot()->y() + $this->offset_y;
 
-            // define target width & height
             $targetWidth = min($crop->width(), $originalSize->width());
             $targetHeight = min($crop->height(), $originalSize->height());
 
-//            $targetWidth = $targetWidth < $originalSize->width() ? $targetWidth + $offset_x : $targetWidth;
-//            $targetHeight = $targetHeight < $originalSize->height() ? $targetHeight + $offset_y : $targetHeight;
-
-            var_dump([
-                max($offset_x, 0),
-                max($offset_y, 0),
-                $targetWidth,
-                $targetHeight
-            ]);
+            $targetWidth = $targetWidth > $originalSize->width() ? $targetWidth + $offset_x : $targetWidth;
+            $targetHeight = $targetHeight > $originalSize->height() ? $targetHeight + $offset_y : $targetHeight;
 
             $cropped = $image->core()->native()->crop(
                 max($offset_x, 0),
@@ -67,14 +58,10 @@ class CropModifier extends GenericCropModifier implements SpecializedInterface
             );
 
             if ($crop->width() > $originalSize->width() || $cropped->height < $crop->height()) {
-                $image->core()->setNative(
-                    $background->insert($cropped, $offset_x * -1, $offset_y * -1)
-                );
-            } else {
-                $image->core()->setNative(
-                    $cropped->composite2($background, BlendMode::OVER)
-                );
+                $cropped = $background->insert($cropped, $offset_x * -1, $offset_y * -1);
             }
+
+            $image->core()->setNative($cropped);
         }
 
         return $image;
