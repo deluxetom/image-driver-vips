@@ -9,7 +9,6 @@ use Intervention\Image\Interfaces\SpecializedInterface;
 use Intervention\Image\Modifiers\PlaceModifier as GenericPlaceModifier;
 use Jcupitt\Vips\BlendMode;
 use Jcupitt\Vips\Extend;
-use Jcupitt\Vips\Image as VipsImage;
 
 class PlaceModifier extends GenericPlaceModifier implements SpecializedInterface
 {
@@ -20,6 +19,12 @@ class PlaceModifier extends GenericPlaceModifier implements SpecializedInterface
         $imageSize = $image->size()->align($this->position);
 
         if ($this->opacity < 100) {
+            if (!$watermark->core()->native()->hasAlpha()) {
+                $watermark->core()->setNative(
+                    $watermark->core()->native()->bandjoin_const(255)
+                );
+            }
+
             $watermark->core()->setNative(
                 $watermark->core()->native()->multiply([
                     1.0,
@@ -43,8 +48,6 @@ class PlaceModifier extends GenericPlaceModifier implements SpecializedInterface
                     ]
                 )
             );
-
-            $watermark->save('watermark-fit.png');
 
             $image->core()->setNative(
                 $image->core()->native()->composite2(
