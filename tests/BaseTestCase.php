@@ -8,6 +8,7 @@ use Intervention\Image\Colors\Rgb\Channels\Alpha;
 use Intervention\Image\Colors\Rgb\Channels\Blue;
 use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
+use Intervention\Image\Colors\Rgb\Color as RgbColor;
 use Intervention\Image\Drivers\Vips\Decoders\FilePathImageDecoder;
 use Intervention\Image\Drivers\Vips\Driver;
 use Intervention\Image\Image;
@@ -93,5 +94,12 @@ abstract class BaseTestCase extends MockeryTestCase
             $range($a, $tolerance),
             $errorMessage($r, $g, $b, $a, $color)
         );
+    }
+
+    protected function assertTransparency(ColorInterface $color): void
+    {
+        $this->assertInstanceOf(RgbColor::class, $color);
+        $channel = $color->channel(Alpha::class);
+        $this->assertEquals(0, $channel->value());
     }
 }
