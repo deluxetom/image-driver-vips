@@ -9,7 +9,9 @@ use Intervention\Image\Interfaces\CollectionInterface;
 use Intervention\Image\Interfaces\CoreInterface;
 use Intervention\Image\Interfaces\FrameInterface;
 use IteratorAggregate;
+use Jcupitt\Vips\BandFormat;
 use Jcupitt\Vips\Image as VipsImage;
+use Jcupitt\Vips\Interpretation;
 use Traversable;
 
 class Core implements CoreInterface, IteratorAggregate
@@ -86,6 +88,28 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function add(FrameInterface $frame): CoreInterface
     {
+        $frames = [];
+        $delay = $this->vipsImage->get('delay') ?? [];
+
+        for ($i = 0; $i < $this->count(); $i++) {
+            $f = $this->frame($i)->native()
+                ->cast(BandFormat::UCHAR)
+                ->copy(['interpretation' => Interpretation::SRGB]);
+
+            $frames[] = $f;
+        }
+
+        $frames[] = $frame->native();
+        $delay[] = (int) $frame->delay();
+
+        $this->vipsImage = VipsImage::arrayjoin($frames, ['across' => 1]);
+
+        $this->vipsImage->set('delay', $delay);
+        $this->vipsImage->set('loop', 0);
+        $this->vipsImage->set('page-height', $frame->size()->height());
+        $this->vipsImage->set('n-pages', count($frames));
+
+        return $this;
     }
 
     public function loops(): int

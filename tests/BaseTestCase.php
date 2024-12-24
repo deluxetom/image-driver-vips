@@ -8,11 +8,19 @@ use Intervention\Image\Colors\Rgb\Channels\Alpha;
 use Intervention\Image\Colors\Rgb\Channels\Blue;
 use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
+use Intervention\Image\Colors\Rgb\Colorspace;
+use Intervention\Image\Drivers\Vips\Core;
 use Intervention\Image\Drivers\Vips\Decoders\FilePathImageDecoder;
 use Intervention\Image\Drivers\Vips\Driver;
 use Intervention\Image\EncodedImage;
 use Intervention\Image\Image;
 use Intervention\Image\Interfaces\ColorInterface;
+use Intervention\Image\Interfaces\ImageInterface;
+use Intervention\Image\Vips\Color;
+use Jcupitt\Vips\BandFormat;
+use Jcupitt\Vips\Extend;
+use Jcupitt\Vips\Image as VipsImage;
+use Jcupitt\Vips\Interpretation;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 
 abstract class BaseTestCase extends MockeryTestCase
@@ -32,6 +40,23 @@ abstract class BaseTestCase extends MockeryTestCase
         return (new Driver())->specialize(new FilePathImageDecoder())->decode(
             static::getTestResourcePath($filename)
         );
+    }
+
+    public function newImage(int $width, int $height, ?array $background = null): VipsImage
+    {
+        $driver = new Driver();
+        $background = $driver->colorProcessor(new Colorspace())->nativeToColor($background ?? [255, 255, 255, 0]);
+
+        return VipsImage::black(1, 1)
+            ->add($background->channel(Red::class)->value())
+            ->cast(BandFormat::UCHAR)
+            ->embed(0, 0, $width, $height, ['extend' => Extend::COPY])
+            ->copy(['interpretation' => Interpretation::SRGB])
+            ->bandjoin([
+                $background->channel(Green::class)->value(),
+                $background->channel(Blue::class)->value(),
+                $background->channel(Alpha::class)->value(),
+            ]);
     }
 
     /**
