@@ -120,12 +120,24 @@ class Core implements CoreInterface, IteratorAggregate
     {
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::first()
+     */
     public function first(): FrameInterface
     {
+        return $this->frame(0);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectableInterface::last()
+     */
     public function last(): FrameInterface
     {
+        return $this->frame($this->count() - 1);
     }
 
     public function has(int|string $key): bool
