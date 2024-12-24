@@ -9,7 +9,6 @@ use Intervention\Image\Interfaces\ColorInterface;
 use Intervention\Image\Interfaces\ColorspaceInterface;
 use Intervention\Image\Interfaces\ImageInterface;
 use Intervention\Image\Interfaces\SpecializedInterface;
-use Jcupitt\Vips\BandFormat;
 use Jcupitt\Vips\Image as VipsImage;
 
 class PixelColorAnalyzer extends GenericPixelColorAnalyzer implements SpecializedInterface
