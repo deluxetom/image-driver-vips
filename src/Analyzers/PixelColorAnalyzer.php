@@ -27,23 +27,10 @@ class PixelColorAnalyzer extends GenericPixelColorAnalyzer implements Specialize
      */
     protected function colorAt(ColorspaceInterface $colorspace, VipsImage $vipsImage): ColorInterface
     {
-        $normalizer = function ($value) use ($vipsImage): int {
-            if ($vipsImage->format === BandFormat::UCHAR) {
-                return (int) $value;
-            }
-
-            // Normalize for other formats (e.g., 16-bit images or float)
-            $maxValue = 255; // Max for 8-bit images
-            $minValue = $vipsImage->min();
-            $range = $vipsImage->max() - $minValue;
-
-            return (int) round((($value - $minValue) / $range) * $maxValue);
-        };
-
         return $this->driver()
             ->colorProcessor($colorspace)
             ->nativeToColor(array_map(
-                $normalizer,
+                fn ($value): int => (int) min($value, 255),
                 $vipsImage->getpoint($this->x, $this->y)
             ));
     }
