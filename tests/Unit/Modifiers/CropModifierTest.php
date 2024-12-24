@@ -6,7 +6,6 @@ namespace Intervention\Image\Drivers\Vips\Tests\Unit\Modifiers;
 
 use Intervention\Image\Drivers\Vips\Modifiers\CropModifier;
 use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
-use Jcupitt\Vips\Interesting;
 use PHPUnit\Framework\Attributes\CoversClass;
 
 #[CoversClass(\Intervention\Image\Modifiers\CropModifier::class)]
@@ -39,7 +38,7 @@ final class CropModifierTest extends BaseTestCase
     public function testModifyCropSmart(): void
     {
         $image = $this->readTestImage('cats.gif');
-        $image = $image->modify(new CropModifier(50, 50, 0, 0, 'ff0000', Interesting::ATTENTION));
+        $image = $image->modify(new CropModifier(50, 50, 0, 0, 'ff0000', 'interesting-attention'));
         $this->assertEquals(50, $image->width());
         $this->assertEquals(50, $image->height());
         $this->assertColor(255, 219, 154, 255, $image->pickColor(25, 25));

@@ -20,6 +20,8 @@ use Jcupitt\Vips\Interpretation;
 
 class CropModifier extends GenericCropModifier implements SpecializedInterface
 {
+    public const INTERESTING_PREFIX = 'interesting-';
+
     public function apply(ImageInterface $image): ImageInterface
     {
         $originalSize = $image->size();
@@ -27,7 +29,7 @@ class CropModifier extends GenericCropModifier implements SpecializedInterface
         $background = $this->background($crop);
 
         if (
-            in_array($this->position, [Interesting::ATTENTION, Interesting::ENTROPY]) &&
+            in_array($this->position, $this->getInterestingPositions()) &&
             (
                 $crop->width() < $originalSize->width() ||
                 $crop->height() < $originalSize->height()
@@ -37,7 +39,7 @@ class CropModifier extends GenericCropModifier implements SpecializedInterface
                 $image->core()->native()->smartcrop(
                     $crop->width(),
                     $crop->height(),
-                    ['interesting' => $this->position]
+                    ['interesting' => str_replace(self::INTERESTING_PREFIX, '', $this->position)]
                 )
             );
         } else {
@@ -81,5 +83,21 @@ class CropModifier extends GenericCropModifier implements SpecializedInterface
                 $bgColor->channel(Blue::class)->value(),
                 $bgColor->channel(Alpha::class)->value(),
             ]);
+    }
+
+    /**
+     * Smart crop interesting positions, prefixed with `interesting-`.
+     */
+    private function getInterestingPositions(): array
+    {
+        return array_map(fn (string $position): string => self::INTERESTING_PREFIX . $position, [
+            Interesting::NONE,
+            Interesting::CENTRE,
+            Interesting::ENTROPY,
+            Interesting::ATTENTION,
+            Interesting::LOW,
+            Interesting::HIGH,
+            Interesting::ALL,
+        ]);
     }
 }
