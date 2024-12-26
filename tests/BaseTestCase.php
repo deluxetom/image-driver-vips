@@ -10,6 +10,7 @@ use Intervention\Image\Colors\Rgb\Channels\Green;
 use Intervention\Image\Colors\Rgb\Channels\Red;
 use Intervention\Image\Colors\Rgb\Colorspace;
 use Intervention\Image\Drivers\Vips\Core;
+use Intervention\Image\Colors\Rgb\Color as RgbColor;
 use Intervention\Image\Drivers\Vips\Decoders\FilePathImageDecoder;
 use Intervention\Image\Drivers\Vips\Driver;
 use Intervention\Image\EncodedImage;
@@ -134,5 +135,12 @@ abstract class BaseTestCase extends MockeryTestCase
             in_array($detected, $allowed),
             'Desteted media type ' . $detected . ' is not in allowed types [' . implode(', ', $allowed) . ']'
         );
+    }
+
+    protected function assertTransparency(ColorInterface $color): void
+    {
+        $this->assertInstanceOf(RgbColor::class, $color);
+        $channel = $color->channel(Alpha::class);
+        $this->assertEquals(0, $channel->value());
     }
 }
