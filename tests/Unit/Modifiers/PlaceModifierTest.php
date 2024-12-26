@@ -9,7 +9,7 @@ use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
 use Intervention\Image\Modifiers\PlaceModifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(\Intervention\Image\Drivers\PlaceModifier::class)]
+#[CoversClass(PlaceModifier::class)]
 #[CoversClass(\Intervention\Image\Drivers\Vips\Modifiers\PlaceModifier::class)]
 final class PlaceModifierTest extends BaseTestCase
 {
