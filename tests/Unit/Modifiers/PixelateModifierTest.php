@@ -8,8 +8,8 @@ use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
 use Intervention\Image\Modifiers\PixelateModifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(\Intervention\Image\Drivers\PixelateModifier::class)]
-#[CoversClass(\Intervention\Image\Drivers\Imagick\Modifiers\PixelateModifier::class)]
+#[CoversClass(PixelateModifier::class)]
+#[CoversClass(\Intervention\Image\Drivers\Vips\Modifiers\PixelateModifier::class)]
 final class PixelateModifierTest extends BaseTestCase
 {
     public function testModify(): void
