@@ -8,7 +8,7 @@ use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
 use Intervention\Image\Modifiers\BrightnessModifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(\Intervention\Image\Modifiers\BrightnessModifier::class)]
+#[CoversClass(BrightnessModifier::class)]
 #[CoversClass(\Intervention\Image\Drivers\Vips\Modifiers\BrightnessModifier::class)]
 final class BrightnessModifierTest extends BaseTestCase
 {
