@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Vips\Tests\Unit\Modifiers;
 
-use Intervention\Image\Drivers\Vips\Modifiers\CropModifier;
 use Intervention\Image\Drivers\Vips\Tests\BaseTestCase;
+use Intervention\Image\Modifiers\CropModifier;
 use PHPUnit\Framework\Attributes\CoversClass;
 
-#[CoversClass(\Intervention\Image\Modifiers\CropModifier::class)]
-#[CoversClass(\Intervention\Image\Drivers\Imagick\Modifiers\CropModifier::class)]
+#[CoversClass(CropModifier::class)]
+#[CoversClass(\Intervention\Image\Drivers\Vips\Modifiers\CropModifier::class)]
 final class CropModifierTest extends BaseTestCase
 {
     public function testModifyCrop(): void
