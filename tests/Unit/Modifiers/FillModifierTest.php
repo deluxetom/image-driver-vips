@@ -10,8 +10,8 @@ use Intervention\Image\Colors\Rgb\Color;
 use Intervention\Image\Modifiers\FillModifier;
 use Intervention\Image\Geometry\Point;
 
-#[CoversClass(\Intervention\Image\Modifiers\FillModifier::class)]
-#[CoversClass(\Intervention\Image\Drivers\Imagick\Modifiers\FillModifier::class)]
+#[CoversClass(FillModifier::class)]
+#[CoversClass(\Intervention\Image\Drivers\Vips\Modifiers\FillModifier::class)]
 final class FillModifierTest extends BaseTestCase
 {
     public function testFloodFillColor(): void
