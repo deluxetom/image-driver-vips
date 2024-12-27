@@ -14,15 +14,32 @@ use Intervention\Image\Colors\Rgb\Color as RgbColor;
 
 class ColorProcessor implements ColorProcessorInterface
 {
+    /**
+     * Create new ColorProcessor instance
+     *
+     * @param ColorspaceInterfaca $colorspace
+     * @return void
+     */
     public function __construct(protected ColorspaceInterface $colorspace)
     {
+        //
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see ColorProcessorInterface::colorToNative()
+     */
     public function colorToNative(ColorInterface $color)
     {
         return array_map(fn ($value) => $value * 255, $color->normalize());
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see ColorProcessorInterface::nativeToColor()
+     */
     public function nativeToColor(mixed $native): ColorInterface
     {
         if (!is_array($native)) {

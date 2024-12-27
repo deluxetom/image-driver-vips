@@ -14,8 +14,16 @@ use Jcupitt\Vips\Image as VipsImage;
 
 class Frame implements FrameInterface
 {
+    /**
+     * Create new frame instance
+     *
+     * @param VipsImage $vipsImage
+     * @param float $delay
+     * @return void
+     */
     public function __construct(protected VipsImage $vipsImage, protected float $delay = 0)
     {
+        //
     }
 
     /**
@@ -113,11 +121,21 @@ class Frame implements FrameInterface
     {
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::offsetLeft()
+     */
     public function offsetLeft(): int
     {
         return $this->native()->get('xoffset');
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::setOffsetLeft()
+     */
     public function setOffsetLeft(int $offset): FrameInterface
     {
         $this->native()->set('xoffset', $offset);
@@ -125,11 +143,21 @@ class Frame implements FrameInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::offsetTop()
+     */
     public function offsetTop(): int
     {
         return $this->native()->get('yoffset');
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see FrameInterface::setOffsetTop()
+     */
     public function setOffsetTop(int $offset): FrameInterface
     {
         $this->native()->set('yoffset', $offset);

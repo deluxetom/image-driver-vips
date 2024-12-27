@@ -85,6 +85,11 @@ class Core implements CoreInterface, IteratorAggregate
         }
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::add()
+     */
     public function add(FrameInterface $frame): CoreInterface
     {
         $frames = $this->toArray();
@@ -103,11 +108,21 @@ class Core implements CoreInterface, IteratorAggregate
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::loops()
+     */
     public function loops(): int
     {
         return (int) $this->vipsImage->get('loop');
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CoreInterface::setLoops()
+     */
     public function setLoops(int $loops): CoreInterface
     {
         $this->vipsImage->set('loop', $loops);
