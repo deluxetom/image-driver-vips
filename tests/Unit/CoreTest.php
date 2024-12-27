@@ -104,4 +104,11 @@ class CoreTest extends BaseTestCase
         $this->assertNull($this->core->get(3));
         $this->assertEquals('foo', $this->core->get(3, 'foo'));
     }
+
+    public function testIteratorAggregate(): void
+    {
+        foreach ($this->core as $frame) {
+            $this->assertInstanceOf(Frame::class, $frame);
+        }
+    }
 }

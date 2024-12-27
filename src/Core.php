@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Intervention\Image\Drivers\Vips;
 
+use ArrayIterator;
 use Intervention\Image\Exceptions\AnimationException;
 use Intervention\Image\Interfaces\CollectionInterface;
 use Intervention\Image\Interfaces\CoreInterface;
@@ -218,7 +219,13 @@ class Core implements CoreInterface, IteratorAggregate
     {
     }
 
+    /**
+     * Implementation of IteratorAggregate
+     *
+     * @return Traversable<FrameInterface>
+     */
     public function getIterator(): Traversable
     {
+        return new ArrayIterator($this);
     }
 }
