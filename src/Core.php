@@ -16,6 +16,8 @@ use Traversable;
 
 class Core implements CoreInterface, IteratorAggregate
 {
+    protected int $loops = 0;
+
     /**
      * Create new core instance
      *
@@ -88,16 +90,8 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function add(FrameInterface $frame): CoreInterface
     {
-        $frames = [];
+        $frames = $this->toArray();
         $delay = $this->vipsImage->get('delay') ?? [];
-
-        for ($i = 0; $i < $this->count(); $i++) {
-            $f = $this->frame($i)->native()
-                ->cast(BandFormat::UCHAR)
-                ->copy(['interpretation' => Interpretation::SRGB]);
-
-            $frames[] = $f;
-        }
 
         $frames[] = $frame->native();
         $delay[] = (int) $frame->delay();
@@ -114,10 +108,14 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function loops(): int
     {
+        return $this->loops;
     }
 
     public function setLoops(int $loops): CoreInterface
     {
+        $this->loops = $loops;
+
+        return $this;
     }
 
     /**
@@ -140,28 +138,78 @@ class Core implements CoreInterface, IteratorAggregate
         return $this->frame($this->count() - 1);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::has()
+     */
     public function has(int|string $key): bool
     {
+        try {
+            return !empty($this->frame($key));
+        } catch (AnimationException) {
+            return false;
+        }
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::push()
+     */
     public function push($item): CollectionInterface
     {
+        return $this->add($item);
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::get()
+     */
     public function get(int|string $key, $default = null): mixed
     {
+        try {
+            return $this->frame($key);
+        } catch (AnimationException) {
+            return $default;
+        }
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::getAtPosition()
+     */
     public function getAtPosition(int $key = 0, $default = null): mixed
     {
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::empty()
+     */
     public function empty(): CollectionInterface
     {
+        $this->vipsImage = VipsImage::black(1, 1)->cast($this->vipsImage->format);
+
+        return $this;
     }
 
     public function toArray(): array
     {
+        $frames = [];
+
+        for ($i = 0; $i < $this->count(); $i++) {
+            $f = $this->frame($i)->native()
+                ->cast($this->vipsImage->format)
+                ->copy(['interpretation' => $this->vipsImage->interpretation]);
+
+            $frames[] = $f;
+        }
+
+        return $frames;
     }
 
     public function slice(int $offset, ?int $length = 0): CollectionInterface
