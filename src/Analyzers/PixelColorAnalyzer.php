@@ -29,7 +29,7 @@ class PixelColorAnalyzer extends GenericPixelColorAnalyzer implements Specialize
         return $this->driver()
             ->colorProcessor($colorspace)
             ->nativeToColor(array_map(
-                fn ($value): int => (int) $value,
+                fn ($value): int => (int) min($value, 255),
                 $vipsImage->getpoint($this->x, $this->y)
             ));
     }
