@@ -80,6 +80,14 @@ class CoreTest extends BaseTestCase
         $this->assertInstanceOf(Core::class, $result);
     }
 
+    public function testSetGetLoops(): void
+    {
+        $this->assertEquals(0, $this->core->loops());
+        $result = $this->core->setLoops(12);
+        $this->assertEquals(12, $this->core->loops());
+        $this->assertInstanceOf(Core::class, $result);
+    }
+
     public function testHas(): void
     {
         $this->assertTrue($this->core->has(0));

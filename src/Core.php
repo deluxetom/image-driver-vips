@@ -9,15 +9,11 @@ use Intervention\Image\Interfaces\CollectionInterface;
 use Intervention\Image\Interfaces\CoreInterface;
 use Intervention\Image\Interfaces\FrameInterface;
 use IteratorAggregate;
-use Jcupitt\Vips\BandFormat;
 use Jcupitt\Vips\Image as VipsImage;
-use Jcupitt\Vips\Interpretation;
 use Traversable;
 
 class Core implements CoreInterface, IteratorAggregate
 {
-    protected int $loops = 0;
-
     /**
      * Create new core instance
      *
@@ -108,12 +104,12 @@ class Core implements CoreInterface, IteratorAggregate
 
     public function loops(): int
     {
-        return $this->loops;
+        return (int) $this->vipsImage->get('loop');
     }
 
     public function setLoops(int $loops): CoreInterface
     {
-        $this->loops = $loops;
+        $this->vipsImage->set('loop', $loops);
 
         return $this;
     }
@@ -183,6 +179,7 @@ class Core implements CoreInterface, IteratorAggregate
      */
     public function getAtPosition(int $key = 0, $default = null): mixed
     {
+        return $this->get($key, $default);
     }
 
     /**
@@ -212,6 +209,11 @@ class Core implements CoreInterface, IteratorAggregate
         return $frames;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see CollectionInterface::slice()
+     */
     public function slice(int $offset, ?int $length = 0): CollectionInterface
     {
     }
